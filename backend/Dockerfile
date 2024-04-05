@@ -4,11 +4,12 @@ FROM golang:latest as builder
 # Set the Current Working Directory inside the container
 WORKDIR /app
 
-# Copy go.mod and go.sum
-COPY go.* .air.toml ./
-
 RUN go install github.com/cosmtrek/air@latest
 
+ENV PATH $PATH:/go/bin
+
+# Copy go.mod and go.sum
+COPY go.* .air.toml ./
 
 # Download all dependencies
 RUN go mod download
@@ -20,7 +21,7 @@ COPY . .
 EXPOSE 4200
 
 # Set the working directory to the location of the main.go file
-WORKDIR /app/cmd/server
+WORKDIR /app
 
 # Build the Go app
 RUN CGO_ENABLED=0 GOOS=linux go build -o main .
@@ -32,13 +33,12 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 
 # Copy the Pre-built binary file from the previous stage
-COPY --from=builder /app/cmd/server/main .
+COPY --from=builder /app/main .
 
-# Copy env file
-COPY --from=builder /app/cmd/server/.env .
+# # Copy env file
+COPY --from=builder /app/.env .
 
 # # Command to run the executable
-CMD ["air"]
-
-# Command to run the executable with air
+CMD ["./main"]
+# CMD ["air", "-c", ".air.toml"]
 

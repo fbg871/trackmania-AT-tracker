@@ -1,37 +1,36 @@
-import React, { useEffect, useState } from "react";
-import { Card, CardContent, Typography, CardActionArea } from "@mui/material";
-import { ISeasonData } from "../services/trackmaniaApi";
+import {
+  Card,
+  CardContent,
+  Typography,
+  CardActionArea,
+  Grid,
+} from "@mui/material";
+import { ISeasonInfo } from "../services/trackmaniaApi";
 
-interface SeasonCardProps {
-  season: ISeasonData;
+interface ISeasonCardProps {
+  index: number;
+  season: ISeasonInfo;
   onClick: () => void; // Add a click handler
 }
 
-const SeasonCard: React.FC<SeasonCardProps> = ({ season, onClick }) => {
-  const [missingAuthorMedals, setMissingAuthorMedals] = useState<number>(0);
-
-  useEffect(() => {
-    if (season.maps) {
-      const missingMedals = season.maps.filter((map) => map.medal !== 4).length;
-      setMissingAuthorMedals(missingMedals);
-    }
-  }, []);
-
+function SeasonCard({ season, onClick, index }: ISeasonCardProps) {
   return (
-    <Card sx={{ minWidth: 275, margin: 2 }} onClick={onClick}>
-      <CardActionArea>
-        <CardContent>
-          <Typography variant="h5" component="div">
-            {season.name}
-          </Typography>
-          {/* Placeholder for additional number, can be updated later */}
-          <Typography color="text.secondary">
-            Missing ATs: {missingAuthorMedals}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-    </Card>
+    <Grid item xs={12} sm={6} md={4} key={index}>
+      <Card sx={{ minWidth: 275, margin: 2 }} onClick={onClick}>
+        <CardActionArea>
+          <CardContent>
+            <Typography variant="h5" component="div">
+              {season.name}
+            </Typography>
+            {/* Placeholder for additional number, can be updated later */}
+            <Typography color="text.secondary">
+              Missing ATs: {25 - season.authorMedalCount}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Card>
+    </Grid>
   );
-};
+}
 
 export default SeasonCard;

@@ -1,76 +1,101 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, IconButton, Typography } from "@mui/material";
 import { IMapData } from "../services/trackmaniaApi";
+import { Star, StarBorderOutlined } from "@mui/icons-material";
+import {
+  addOrRemoveFavorite,
+  getFavorites,
+} from "../services/localStorageService";
 
 interface MapCardProps {
   mapData: IMapData;
+  favorites: string[];
+  setFavorites: (favorites: string[]) => void;
+  setSelectedMap: (map: IMapData) => void;
+  setModalOpen: (open: boolean) => void;
 }
 
-const medalName = ["None", "Bronze", "Silver", "Gold", "Author"];
+function MapCard({
+  mapData,
+  favorites,
+  setFavorites,
+  setSelectedMap,
+  setModalOpen,
+}: MapCardProps) {
+  function formatTime(ms: number, symbol?: "+" | "-"): string {
+    if (ms === 0) return "-: - -.- - -  ";
 
-const MapCard: React.FC<MapCardProps> = ({ mapData }) => {
-  function formatTime(ms: number): string {
     const minutes = Math.floor(ms / 60000);
     const seconds = ((ms % 60000) / 1000).toFixed(3);
-    return `${minutes}:${parseInt(seconds) < 10 ? "0" : ""}${seconds}`;
+    return `${symbol ?? ""}${minutes}:${parseInt(seconds) < 10 ? "0" : ""}${seconds}`;
   }
 
   function formatDelta(ms: number): string {
-    if (ms < 0) return `+${formatTime(-ms)}`;
-    const minutes = Math.floor(ms / 60000);
-    const seconds = ((ms % 60000) / 1000).toFixed(3);
-    return `-${minutes}:${parseInt(seconds) < 10 ? "0" : ""}${seconds}`;
+    return formatTime(Math.abs(ms), ms > 0 ? "+" : "-");
   }
 
-  function getTimeDelta(authorScore: number, personalBest: number) {
-    return formatDelta(authorScore - personalBest);
+  function toggleFavorite() {
+    addOrRemoveFavorite(mapData.name);
+    setFavorites(getFavorites());
   }
-  // authomedal image is located at src/assets/authormedal.png
 
   return (
-    <>
-      <Card
-        sx={{
-          minWidth: 275,
-          margin: 2,
-          backgroundImage: `url(${mapData.thumbnailUrl})`,
-          backgroundSize: "cover",
-        }}
-      >
-        {mapData.medal === 4 && (
-          <Box
+    <Card
+      sx={{
+        // minWidth: 150,
+        backgroundImage: `url(${mapData.thumbnailUrl})`,
+        backgroundSize: "cover",
+        border: mapData.medal === 4 ? "10px solid green" : "10px solid red",
+      }}
+      onClick={() => {
+        setModalOpen(true);
+        setSelectedMap(mapData);
+      }}
+    >
+      <CardContent sx={{ color: "white" }}>
+        <img src={"../assets/authormedal.png"} alt="authormedal" />
+        {/* star button icon for favoriting maps */}
+        <IconButton onClick={toggleFavorite}>
+          {favorites.includes(mapData.name) ? <Star /> : <StarBorderOutlined />}
+        </IconButton>
+
+        <Typography sx={{ mb: 6 }}></Typography>
+        <Typography
+          variant="h5"
+          component="div"
+          color="white"
+          textAlign="right"
+        >
+          {"#" + mapData.num + " " + mapData.name}
+        </Typography>
+        <Typography
+          variant="body2"
+          textAlign="right"
+          sx={{
+            backgroundColor: "grey",
+            opacity: 0.75,
+            padding: 1,
+          }}
+        >
+          Author Time: {formatTime(mapData.authorScore)}
+          <br />
+          Personal Best: {formatTime(mapData.personalBest)}
+        </Typography>
+        {mapData.delta && (
+          <Typography
+            variant="h6"
+            textAlign="right"
             sx={{
-              display: "flex",
-              justifyContent: "center",
-              backgroundImage: `url(src/assets/authormedal.png)`,
-              backgroundSize: "cover",
-              position: "absolute",
-              width: "30px",
-              height: "30px",
+              opacity: 0.75,
+              backgroundColor: "grey",
             }}
-          />
+            color={mapData.delta < 0 ? "blue" : "red"}
+          >
+            {formatDelta(mapData.delta)}
+          </Typography>
         )}
-        <CardContent>
-          <Typography variant="h5" component="div">
-            {mapData.name}
-          </Typography>
-          <Typography color="text.secondary">
-            Author Time: {formatTime(mapData.authorScore)}
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Personal Best: {formatTime(mapData.personalBest)}
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            Delta: {getTimeDelta(mapData.authorScore, mapData.personalBest)}
-          </Typography>
-          <Typography variant="body2">
-            Medal: {medalName[mapData.medal]}
-            <br />
-            Personal Best: {formatTime(mapData.personalBest)}
-          </Typography>
-        </CardContent>
-      </Card>
-    </>
+      </CardContent>
+    </Card>
   );
-};
+}
 
 export default MapCard;

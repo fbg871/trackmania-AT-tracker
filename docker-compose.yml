@@ -8,8 +8,8 @@ services:
     volumes:
       - ./backend:/app
       - /app/node_modules
-    environment:
-      - AIR_LIVE_RELOAD=1
+    # environment:
+    #   - AIR_LIVE_RELOAD=1
 
   frontend:
     build: ./frontend
