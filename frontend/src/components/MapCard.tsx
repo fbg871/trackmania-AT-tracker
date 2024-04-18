@@ -1,10 +1,11 @@
-import { Card, CardContent, IconButton, Typography } from "@mui/material";
+import { Card, CardContent, Grid, IconButton, Typography } from "@mui/material";
 import { IMapData } from "../services/trackmaniaApi";
 import { Star, StarBorderOutlined } from "@mui/icons-material";
 import {
   addOrRemoveFavorite,
   getFavorites,
 } from "../services/localStorageService";
+import YoutubeSearchButton from "./YoutubeSearchButton";
 
 interface MapCardProps {
   mapData: IMapData;
@@ -41,8 +42,7 @@ function MapCard({
   return (
     <Card
       sx={{
-        // minWidth: 150,
-        backgroundImage: `url(${mapData.thumbnailUrl})`,
+        // backgroundImage: `url(${mapData.thumbnailUrl})`,
         backgroundSize: "cover",
         border: mapData.medal === 4 ? "10px solid green" : "10px solid red",
       }}
@@ -51,9 +51,53 @@ function MapCard({
         setSelectedMap(mapData);
       }}
     >
+      <Grid container>
+        <Grid item xs={12}>
+          <img
+            src={mapData.thumbnailUrl}
+            alt="thumbnail"
+            style={{
+              width: "100%",
+              position: "relative",
+              clipPath: "rect(0px, 100%, 50px, 0px)",
+            }}
+          />
+        </Grid>
+        <Grid container item xs={12} sx={{ bgcolor: "darkgrey" }}>
+          <IconButton onClick={toggleFavorite}>
+            {favorites.includes(mapData.name) ? (
+              <Star />
+            ) : (
+              <StarBorderOutlined />
+            )}
+          </IconButton>
+
+          <Typography sx={{ mb: 6 }}></Typography>
+          <Typography
+            variant="h5"
+            component="div"
+            color="white"
+            textAlign="right"
+          >
+            {"#" + mapData.num + " " + mapData.name}
+          </Typography>
+          <Typography
+            variant="body2"
+            textAlign="right"
+            sx={{
+              backgroundColor: "grey",
+              opacity: 0.75,
+              padding: 1,
+            }}
+          >
+            Author Time: {formatTime(mapData.authorScore)}
+            <br />
+            Personal Best: {formatTime(mapData.personalBest)}
+          </Typography>
+        </Grid>
+      </Grid>
       <CardContent sx={{ color: "white" }}>
         <img src={"../assets/authormedal.png"} alt="authormedal" />
-        {/* star button icon for favoriting maps */}
         <IconButton onClick={toggleFavorite}>
           {favorites.includes(mapData.name) ? <Star /> : <StarBorderOutlined />}
         </IconButton>
@@ -93,6 +137,7 @@ function MapCard({
             {formatDelta(mapData.delta)}
           </Typography>
         )}
+        <YoutubeSearchButton searchQuery={mapData.name} />
       </CardContent>
     </Card>
   );

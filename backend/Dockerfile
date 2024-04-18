@@ -4,7 +4,8 @@ FROM golang:latest as builder
 # Set the Current Working Directory inside the container
 WORKDIR /app
 
-RUN go install github.com/cosmtrek/air@latest
+# RUN go install github.com/cosmtrek/air@latest
+RUN curl -sSfL https://raw.githubusercontent.com/cosmtrek/air/master/install.sh | sh -s -- -b $(go env GOPATH)/bin
 
 ENV PATH $PATH:/go/bin
 

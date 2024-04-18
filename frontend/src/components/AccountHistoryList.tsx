@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemText, Paper } from "@mui/material";
+import { List, ListItemButton, ListItemText, Paper } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -24,18 +24,20 @@ function AccountHistoryList() {
   };
 
   return (
-    <List>
+    <List
+      sx={{
+        width: "100%",
+      }}
+    >
       {accountHistory.map((account, index) => (
-        <ListItem
+        <ListItemButton
           key={index}
-          button
           onClick={() => handleUsernameClick(account)}
-          style={{ margin: "10px 0" }}
         >
           <Paper style={{ padding: "10px", width: "100%" }}>
             <ListItemText primary={account.username} />
           </Paper>
-        </ListItem>
+        </ListItemButton>
       ))}
     </List>
   );

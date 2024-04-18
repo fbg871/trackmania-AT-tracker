@@ -1,22 +1,23 @@
 import Layout from "./Layout";
 import LoginForm from "../components/LoginForm";
 import AccountHistoryList from "../components/AccountHistoryList";
-import { Box } from "@mui/material";
+import { Grid } from "@mui/material";
 
 function HomePage() {
   return (
     <Layout>
-      <Box
+      <Grid
+        container
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
+          mt: "50px",
+          border: "1px solid #ccc",
+          padding: "50px",
+          maxWidth: 700,
         }}
       >
         <LoginForm />
         <AccountHistoryList />
-      </Box>
+      </Grid>
     </Layout>
   );
 }
