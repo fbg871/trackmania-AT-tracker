@@ -94,51 +94,18 @@ function MapCard({
             <br />
             Personal Best: {formatTime(mapData.personalBest)}
           </Typography>
+          {mapData.delta && (
+            <Typography
+              variant="h6"
+              textAlign="right"
+              color={mapData.delta < 0 ? "blue" : "red"}
+            >
+              {formatDelta(mapData.delta)}
+            </Typography>
+          )}
+          <YoutubeSearchButton searchQuery={mapData.name} />
         </Grid>
       </Grid>
-      <CardContent sx={{ color: "white" }}>
-        <img src={"../assets/authormedal.png"} alt="authormedal" />
-        <IconButton onClick={toggleFavorite}>
-          {favorites.includes(mapData.name) ? <Star /> : <StarBorderOutlined />}
-        </IconButton>
-
-        <Typography sx={{ mb: 6 }}></Typography>
-        <Typography
-          variant="h5"
-          component="div"
-          color="white"
-          textAlign="right"
-        >
-          {"#" + mapData.num + " " + mapData.name}
-        </Typography>
-        <Typography
-          variant="body2"
-          textAlign="right"
-          sx={{
-            backgroundColor: "grey",
-            opacity: 0.75,
-            padding: 1,
-          }}
-        >
-          Author Time: {formatTime(mapData.authorScore)}
-          <br />
-          Personal Best: {formatTime(mapData.personalBest)}
-        </Typography>
-        {mapData.delta && (
-          <Typography
-            variant="h6"
-            textAlign="right"
-            sx={{
-              opacity: 0.75,
-              backgroundColor: "grey",
-            }}
-            color={mapData.delta < 0 ? "blue" : "red"}
-          >
-            {formatDelta(mapData.delta)}
-          </Typography>
-        )}
-        <YoutubeSearchButton searchQuery={mapData.name} />
-      </CardContent>
     </Card>
   );
 }
