@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, IconButton, Typography } from "@mui/material";
+import { Card,  Grid, IconButton, Typography } from "@mui/material";
 import { IMapData } from "../services/trackmaniaApi";
 import { Star, StarBorderOutlined } from "@mui/icons-material";
 import {
@@ -6,6 +6,7 @@ import {
   getFavorites,
 } from "../services/localStorageService";
 import YoutubeSearchButton from "./YoutubeSearchButton";
+import authorMedal from '../assets/authormedal.png';
 
 interface MapCardProps {
   mapData: IMapData;
@@ -40,73 +41,40 @@ function MapCard({
   }
 
   return (
-    <Card
-      sx={{
-        // backgroundImage: `url(${mapData.thumbnailUrl})`,
-        backgroundSize: "cover",
-        border: mapData.medal === 4 ? "10px solid green" : "10px solid red",
-      }}
-      onClick={() => {
-        setModalOpen(true);
-        setSelectedMap(mapData);
-      }}
-    >
-      <Grid container>
-        <Grid item xs={12}>
-          <img
-            src={mapData.thumbnailUrl}
-            alt="thumbnail"
-            style={{
-              width: "100%",
-              position: "relative",
-              clipPath: "rect(0px, 100%, 50px, 0px)",
-            }}
-          />
-        </Grid>
-        <Grid container item xs={12} sx={{ bgcolor: "darkgrey" }}>
-          <IconButton onClick={toggleFavorite}>
-            {favorites.includes(mapData.name) ? (
-              <Star />
-            ) : (
-              <StarBorderOutlined />
-            )}
-          </IconButton>
+    <>
+    <Grid item 
+    onClick={() => setSelectedMap(mapData)}
+    sx={{
+      display: 'flex',
+      bgcolor: "green",
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 0,
+      borderBottomLeftRadius: 0,
+      borderBottomRightRadius: 10,
+      height: 'auto',
+      mt: '5px',
+      padding: '5px',
+      paddingLeft: '10px',
+      paddingRight: '10px',
+      cursor: 'pointer',
+      '&:hover': {
+        bgcolor: 'darkgreen', // Change to your desired hover color
+      },
 
-          <Typography sx={{ mb: 6 }}></Typography>
-          <Typography
-            variant="h5"
-            component="div"
-            color="white"
-            textAlign="right"
-          >
-            {"#" + mapData.num + " " + mapData.name}
-          </Typography>
-          <Typography
-            variant="body2"
-            textAlign="right"
-            sx={{
-              backgroundColor: "grey",
-              opacity: 0.75,
-              padding: 1,
-            }}
-          >
-            Author Time: {formatTime(mapData.authorScore)}
-            <br />
-            Personal Best: {formatTime(mapData.personalBest)}
-          </Typography>
-          {mapData.delta && (
-            <Typography
-              variant="h6"
-              textAlign="right"
-              color={mapData.delta < 0 ? "blue" : "red"}
-            >
-              {formatDelta(mapData.delta)}
-            </Typography>
-          )}
-          <YoutubeSearchButton searchQuery={mapData.name} />
-        </Grid>
-      </Grid>
-    </Card>
+
+    }}>
+      <Typography variant="h4" textAlign="left" color="white">
+        {mapData.num}
+      </Typography>
+      
+      {mapData.medal === 4 && <img  src={authorMedal} alt="author medal" style={{
+        width: '40px', 
+        height: '40px', 
+        transform: 'skewX(10deg)',
+        marginLeft: 'auto'
+        }} />}
+    </Grid>
+    </>
   );
 }
 

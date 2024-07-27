@@ -1,20 +1,19 @@
 import { useEffect, useState } from "react";
-import { IMapData, ISeasonData, getSeasonRecords } from "../services/trackmaniaApi";
+import { ISeasonData, getSeasonRecords } from "../services/trackmaniaApi";
 import { useParams } from "react-router";
 import Layout from "./Layout";
 import SeasonMaps from "../components/SeasonMaps";
 import { Button } from "@mui/material";
 
-function SeasonPage() {
+function AllMapsPage() {
   const [season, setSeason] = useState<ISeasonData>();
   const [isFetching, setIsFetching] = useState(false);
-  const { seasonNumber } = useParams();
 
   useEffect(() => {
-    if (season || !seasonNumber || isFetching) return;
+    if (season || isFetching) return;
 
     setIsFetching(true);
-    fetchSeason(seasonNumber);
+    fetchSeason();
   }, []);
 
   async function fetchSeason(seasonNumber: string) {
@@ -37,10 +36,10 @@ function SeasonPage() {
 
   return (
     <Layout>
-      {/* <Button onClick={sortByDelta}>Sort by delta</Button> */}
-      <SeasonMaps season={season} />
+      <Button onClick={sortByDelta}>Sort by delta</Button>
+      <SeasonMaps season={season} />;
     </Layout>
   );
 }
 
-export default SeasonPage;
+export default AllMapsPage;
